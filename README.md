@@ -1,2 +1,2 @@
-# lis_middleware_manager
+# LIS Middleware Manager
 LIS Middleware Manager
