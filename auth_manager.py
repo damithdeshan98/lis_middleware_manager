@@ -50,13 +50,16 @@ def user_exists(username: str) -> bool:
 
 def save_credentials(username: str, password: str, role: str = "Admin") -> None:
     """Create the initial account (first-time setup). Replaces any existing store."""
+    global _session_user
     salt = secrets.token_bytes(32)
-    _save_users([{
+    user = {
         "username": username,
         "hash": _hash_password(password, salt),
         "salt": salt.hex(),
         "role": role,
-    }])
+    }
+    _save_users([user])
+    _session_user = user
 
 
 def add_user(username: str, password: str, role: str = "General") -> None:

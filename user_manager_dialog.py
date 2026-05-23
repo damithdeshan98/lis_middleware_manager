@@ -67,7 +67,7 @@ class UserManagerDialog(QDialog):
         col_hdr.setFixedHeight(32)
         col_hdr.setStyleSheet("background:#424242;border:none;")
         col_l = QHBoxLayout(col_hdr)
-        col_l.setContentsMargins(68, 0, 130, 0)
+        col_l.setContentsMargins(50, 0, 120, 0)
         col_l.setSpacing(0)
 
         for text, stretch in [("USERNAME", 1), ("ROLE", 0)]:
@@ -139,24 +139,24 @@ class UserManagerDialog(QDialog):
     def _make_row(self, username: str, role: str, index: int) -> QFrame:
         row = QFrame()
         row.setObjectName("userRow")
-        row.setFixedHeight(58)
+        row.setFixedHeight(46)
         row.setStyleSheet(
             "QFrame#userRow { background-color: #3a3a3a; border-bottom: 1px solid #4a4a4a; }"
             "QFrame#userRow:hover { background-color: #424242; }"
         )
         row_l = QHBoxLayout(row)
-        row_l.setContentsMargins(16, 0, 12, 0)
-        row_l.setSpacing(12)
+        row_l.setContentsMargins(10, 0, 8, 0)
+        row_l.setSpacing(8)
 
         # ── Avatar circle ──
         avatar = QLabel(username[0].upper())
-        avatar.setFixedSize(36, 36)
+        avatar.setFixedSize(28, 28)
         avatar.setAlignment(Qt.AlignmentFlag.AlignCenter)
         colors = ["#89b4fa", "#a6e3a1", "#fab387", "#f38ba8", "#cba6f7"]
         color = colors[index % len(colors)]
         avatar.setStyleSheet(
-            f"background:{color};border-radius:18px;"
-            f"color:#1e1e2e;font-weight:bold;font-size:15px;border:none;"
+            f"background:{color};border-radius:14px;"
+            f"color:#1e1e2e;font-weight:bold;font-size:13px;border:none;"
         )
         row_l.addWidget(avatar)
 

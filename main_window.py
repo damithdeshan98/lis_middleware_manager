@@ -162,7 +162,11 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(20, 0, 20, 0)
         layout.setSpacing(10)
 
-        title = QLabel("🔬  LIS Middleware Manager")
+        icon_lbl = QLabel("🔬")
+        icon_lbl.setStyleSheet("font-size: 30px; background: transparent;")
+        layout.addWidget(icon_lbl)
+
+        title = QLabel("LIS Middleware Manager")
         title.setStyleSheet("font-size: 18px; font-weight: bold; color: #89b4fa;")
         layout.addWidget(title)
         layout.addStretch()
@@ -195,28 +199,18 @@ class MainWindow(QMainWindow):
             layout.addWidget(sep)
             layout.addSpacing(6)
 
-            user_lbl = QLabel(f"👤  {self._username}")
+            user_lbl = QLabel(self._username)
             user_lbl.setStyleSheet("font-size: 13px; color: #cdd6f4;")
             layout.addWidget(user_lbl)
-            layout.addSpacing(6)
+            layout.addSpacing(4)
 
             role_color = "#89b4fa" if self._role == "Admin" else "#a6e3a1"
-            role_lbl = QLabel(self._role)
-            role_lbl.setStyleSheet(
-                f"font-size: 11px; font-weight: bold; color: {role_color};"
-                f"background-color: rgba(255,255,255,0.07); border-radius: 4px;"
-                f"padding: 2px 8px;"
+            role_badge = QLabel(self._role)
+            role_badge.setStyleSheet(
+                f"font-size:11px;font-weight:bold;color:{role_color};"
+                f"background:rgba(255,255,255,0.07);border-radius:4px;padding:2px 8px;"
             )
-            layout.addWidget(role_lbl)
-
-            if self._role == "Admin":
-                layout.addSpacing(6)
-                chpw_btn = QPushButton("🔑  Change Password")
-                chpw_btn.setObjectName("changePwBtn")
-                chpw_btn.setFixedHeight(34)
-                chpw_btn.setCursor(Qt.CursorShape.PointingHandCursor)
-                chpw_btn.clicked.connect(self._on_change_password)
-                layout.addWidget(chpw_btn)
+            layout.addWidget(role_badge)
 
             if self._role == "Admin":
                 layout.addSpacing(4)
