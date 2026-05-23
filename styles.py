@@ -1,22 +1,22 @@
 STYLESHEET = """
 QMainWindow {
-    background-color: #0f0f23;
+    background-color: #404040;
 }
 
 QWidget {
-    background-color: #0f0f23;
+    background-color: #404040;
     color: #cdd6f4;
     font-family: 'Segoe UI', 'Inter', sans-serif;
     font-size: 13px;
 }
 
 QSplitter::handle {
-    background-color: #313244;
+    background-color: #5a5a5a;
     width: 1px;
 }
 
 QListWidget {
-    background-color: #1e1e2e;
+    background-color: #4a4a4a;
     border: none;
     outline: none;
     padding: 4px;
@@ -30,25 +30,25 @@ QListWidget::item {
 }
 
 QListWidget::item:selected {
-    background-color: #313244;
+    background-color: #5a5a5a;
 }
 
 QListWidget::item:hover:!selected {
-    background-color: #262637;
+    background-color: #525252;
 }
 
 QTextEdit {
-    background-color: #11111b;
+    background-color: #2e2e2e;
     color: #cdd6f4;
     border: none;
     font-family: 'Consolas', 'Cascadia Code', 'JetBrains Mono', monospace;
     font-size: 12px;
     padding: 10px;
-    selection-background-color: #45475a;
+    selection-background-color: #666666;
 }
 
 QPushButton {
-    background-color: #313244;
+    background-color: #5a5a5a;
     color: #cdd6f4;
     border: none;
     border-radius: 6px;
@@ -57,16 +57,16 @@ QPushButton {
 }
 
 QPushButton:hover {
-    background-color: #45475a;
+    background-color: #686868;
 }
 
 QPushButton:pressed {
-    background-color: #585b70;
+    background-color: #767676;
 }
 
 QPushButton:disabled {
-    background-color: #181825;
-    color: #45475a;
+    background-color: #383838;
+    color: #666666;
 }
 
 QPushButton#addBtn {
@@ -116,8 +116,8 @@ QPushButton#startBtn:hover {
 }
 
 QPushButton#startBtn:disabled {
-    background-color: #1e3320;
-    color: #45475a;
+    background-color: #2e4a2e;
+    color: #666666;
 }
 
 QPushButton#stopBtn {
@@ -134,8 +134,8 @@ QPushButton#stopBtn:hover {
 }
 
 QPushButton#stopBtn:disabled {
-    background-color: #331825;
-    color: #45475a;
+    background-color: #4a2e35;
+    color: #666666;
 }
 
 QPushButton#removeBtn {
@@ -166,20 +166,20 @@ QPushButton#clearLogBtn:hover {
 }
 
 QScrollBar:vertical {
-    background-color: #1e1e2e;
+    background-color: #3a3a3a;
     width: 8px;
     border-radius: 4px;
     margin: 0;
 }
 
 QScrollBar::handle:vertical {
-    background-color: #45475a;
+    background-color: #686868;
     border-radius: 4px;
     min-height: 24px;
 }
 
 QScrollBar::handle:vertical:hover {
-    background-color: #585b70;
+    background-color: #7a7a7a;
 }
 
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
@@ -192,20 +192,20 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
 }
 
 QScrollBar:horizontal {
-    background-color: #1e1e2e;
+    background-color: #3a3a3a;
     height: 8px;
     border-radius: 4px;
     margin: 0;
 }
 
 QScrollBar::handle:horizontal {
-    background-color: #45475a;
+    background-color: #686868;
     border-radius: 4px;
     min-width: 24px;
 }
 
 QScrollBar::handle:horizontal:hover {
-    background-color: #585b70;
+    background-color: #7a7a7a;
 }
 
 QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
@@ -214,15 +214,15 @@ QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
 }
 
 QStatusBar {
-    background-color: #1e1e2e;
-    color: #6c7086;
-    border-top: 1px solid #313244;
+    background-color: #4a4a4a;
+    color: #9a9a9a;
+    border-top: 1px solid #5a5a5a;
     font-size: 12px;
     padding: 0 8px;
 }
 
 QInputDialog {
-    background-color: #1e1e2e;
+    background-color: #4a4a4a;
 }
 
 QInputDialog QLabel {
@@ -231,9 +231,9 @@ QInputDialog QLabel {
 }
 
 QInputDialog QLineEdit {
-    background-color: #313244;
+    background-color: #5a5a5a;
     color: #cdd6f4;
-    border: 1px solid #45475a;
+    border: 1px solid #686868;
     border-radius: 6px;
     padding: 6px 10px;
     font-size: 13px;
@@ -244,7 +244,7 @@ QInputDialog QLineEdit:focus {
 }
 
 QMessageBox {
-    background-color: #1e1e2e;
+    background-color: #4a4a4a;
 }
 
 QMessageBox QLabel {

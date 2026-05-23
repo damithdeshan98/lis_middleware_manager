@@ -44,7 +44,7 @@ class ServiceCardWidget(QWidget):
         self._dot = QLabel("●")
         self._dot.setFixedWidth(20)
         self._dot.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._dot.setStyleSheet("color: #585b70; font-size: 17px;")
+        self._dot.setStyleSheet("color: #808080; font-size: 17px;")
 
         # Info column
         info = QVBoxLayout()
@@ -55,10 +55,10 @@ class ServiceCardWidget(QWidget):
         self._name_lbl.setStyleSheet("font-weight: bold; font-size: 13px; color: #cdd6f4;")
 
         self._file_lbl = QLabel(os.path.basename(jar_path))
-        self._file_lbl.setStyleSheet("font-size: 11px; color: #6c7086;")
+        self._file_lbl.setStyleSheet("font-size: 11px; color: #9a9a9a;")
 
         self._status_lbl = QLabel("Stopped")
-        self._status_lbl.setStyleSheet("font-size: 11px; color: #6c7086;")
+        self._status_lbl.setStyleSheet("font-size: 11px; color: #9a9a9a;")
 
         info.addWidget(self._name_lbl)
         info.addWidget(self._file_lbl)
@@ -90,7 +90,7 @@ class ServiceCardWidget(QWidget):
     def set_status(self, status: str) -> None:
         palette = {
             "Running":  ("#a6e3a1", "#a6e3a1"),
-            "Stopped":  ("#585b70", "#6c7086"),
+            "Stopped":  ("#808080", "#9a9a9a"),
             "Crashed":  ("#f38ba8", "#f38ba8"),
         }
         dot_color, text_color = palette.get(status, ("#585b70", "#6c7086"))
@@ -152,7 +152,7 @@ class MainWindow(QMainWindow):
         bar = QFrame()
         bar.setFixedHeight(56)
         bar.setStyleSheet(
-            "QFrame { background-color: #1e1e2e; border-bottom: 1px solid #313244; }"
+            "QFrame { background-color: #4a4a4a; border-bottom: 1px solid #5a5a5a; }"
         )
         layout = QHBoxLayout(bar)
         layout.setContentsMargins(20, 0, 20, 0)
@@ -189,7 +189,7 @@ class MainWindow(QMainWindow):
         frame.setMinimumWidth(260)
         frame.setMaximumWidth(420)
         frame.setStyleSheet(
-            "QFrame#sidebar { background-color: #1e1e2e; border-right: 1px solid #313244; }"
+            "QFrame#sidebar { background-color: #4a4a4a; border-right: 1px solid #5a5a5a; }"
         )
         layout = QVBoxLayout(frame)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -198,9 +198,9 @@ class MainWindow(QMainWindow):
         hdr = QLabel("   SERVICES")
         hdr.setFixedHeight(36)
         hdr.setStyleSheet(
-            "font-size: 11px; font-weight: bold; color: #585b70;"
-            "letter-spacing: 1px; border-bottom: 1px solid #313244;"
-            "background-color: #1e1e2e; padding-left: 12px;"
+            "font-size: 11px; font-weight: bold; color: #9a9a9a;"
+            "letter-spacing: 1px; border-bottom: 1px solid #5a5a5a;"
+            "background-color: #4a4a4a; padding-left: 12px;"
         )
         layout.addWidget(hdr)
 
@@ -214,7 +214,7 @@ class MainWindow(QMainWindow):
     def _make_log_panel(self) -> QFrame:
         frame = QFrame()
         frame.setObjectName("logPanel")
-        frame.setStyleSheet("QFrame#logPanel { background-color: #181825; }")
+        frame.setStyleSheet("QFrame#logPanel { background-color: #3a3a3a; }")
         layout = QVBoxLayout(frame)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
@@ -223,7 +223,7 @@ class MainWindow(QMainWindow):
         hdr = QFrame()
         hdr.setFixedHeight(44)
         hdr.setStyleSheet(
-            "background-color: #1e1e2e; border-bottom: 1px solid #313244;"
+            "background-color: #4a4a4a; border-bottom: 1px solid #5a5a5a;"
         )
         hdr_layout = QHBoxLayout(hdr)
         hdr_layout.setContentsMargins(16, 6, 16, 6)
@@ -255,7 +255,7 @@ class MainWindow(QMainWindow):
         self._empty_lbl = QLabel("No service selected\n\nClick  + Add JAR  to get started")
         self._empty_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._empty_lbl.setStyleSheet(
-            "color: #45475a; font-size: 15px; background-color: #181825;"
+            "color: #6a6a6a; font-size: 15px; background-color: #3a3a3a;"
         )
         self._empty_lbl.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding

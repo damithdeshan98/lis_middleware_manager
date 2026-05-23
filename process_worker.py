@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 from enum import Enum
 
@@ -5,6 +6,7 @@ from PyQt6.QtCore import QObject, QProcess, QTimer, pyqtSignal
 
 
 RESTART_DELAY_MS = 3000
+PORT_RELEASE_DELAY_MS = 2000  # wait after kill for OS to free bound ports
 
 
 class Status(Enum):
@@ -26,8 +28,23 @@ class MiddlewareProcess(QObject):
         self.status = Status.STOPPED
         self._process: QProcess | None = None
         self._user_stopped = False
+        self._stopped_at: float = 0.0
 
     def start(self) -> None:
+        if self._process and self._process.state() != QProcess.ProcessState.NotRunning:
+            return
+        elapsed_ms = (time.monotonic() - self._stopped_at) * 1000
+        remaining_ms = PORT_RELEASE_DELAY_MS - elapsed_ms
+        if remaining_ms > 50:
+            self._sys_log(
+                f"Waiting {int(remaining_ms)}ms for OS to release port&hellip;",
+                "#fab387",
+            )
+            QTimer.singleShot(int(remaining_ms), self._do_start)
+            return
+        self._do_start()
+
+    def _do_start(self) -> None:
         if self._process and self._process.state() != QProcess.ProcessState.NotRunning:
             return
         self._user_stopped = False
@@ -55,6 +72,7 @@ class MiddlewareProcess(QObject):
     # ------------------------------------------------------------------ #
 
     def _set_stopped(self, exit_code: int) -> None:
+        self._stopped_at = time.monotonic()
         self.status = Status.STOPPED
         self.status_changed.emit(self.id, Status.STOPPED.value)
         self._sys_log(f"Stopped (exit code: {exit_code})", "#6c7086")
