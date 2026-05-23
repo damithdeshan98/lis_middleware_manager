@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import (
 
 import auth_manager
 from add_user_dialog import AddUserDialog
+from change_password_dialog import ChangePasswordDialog
 
 
 class UserManagerDialog(QDialog):
@@ -20,7 +21,7 @@ class UserManagerDialog(QDialog):
         super().__init__(parent)
         self._current_username = current_username
         self.setWindowTitle("User Management")
-        self.setFixedSize(500, 440)
+        self.setFixedSize(580, 440)
         self.setWindowFlag(Qt.WindowType.WindowContextHelpButtonHint, False)
         # Keep the app theme (not the deep-dark login background)
         self.setStyleSheet("QDialog { background-color: #3a3a3a; }")
@@ -195,6 +196,15 @@ class UserManagerDialog(QDialog):
         )
         row_l.addWidget(role_lbl)
 
+        # ── Reset password button ──
+        rp = QPushButton("Reset Pwd")
+        rp.setObjectName("resetPwdBtn")
+        rp.setFixedHeight(28)
+        rp.setFixedWidth(76)
+        rp.setCursor(Qt.CursorShape.PointingHandCursor)
+        rp.clicked.connect(lambda checked, u=username: self._on_reset_password(u))
+        row_l.addWidget(rp)
+
         # ── Remove button ──
         rm = QPushButton("Remove")
         rm.setObjectName("removeUserBtn")
@@ -216,6 +226,17 @@ class UserManagerDialog(QDialog):
         dlg = AddUserDialog(parent=self)
         if dlg.exec() == AddUserDialog.DialogCode.Accepted:
             self._refresh()
+
+    def _on_reset_password(self, username: str) -> None:
+        dlg = ChangePasswordDialog(
+            username=username, require_current=False, parent=self
+        )
+        if dlg.exec() == ChangePasswordDialog.DialogCode.Accepted:
+            QMessageBox.information(
+                self,
+                "Password Reset",
+                f"Password for <b>{username}</b> has been reset successfully.",
+            )
 
     def _on_remove(self, username: str) -> None:
         reply = QMessageBox.warning(

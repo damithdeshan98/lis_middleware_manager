@@ -111,3 +111,34 @@ def get_current_user() -> tuple[str, str]:
     if _session_user:
         return _session_user.get("username", ""), _session_user.get("role", "General")
     return "", "General"
+
+
+def change_password(username: str, old_password: str, new_password: str) -> bool:
+    """Verify old password then update to new. Returns False if old password is wrong."""
+    users = _load_users()
+    for user in users:
+        if user.get("username") != username:
+            continue
+        salt = bytes.fromhex(user["salt"])
+        if not secrets.compare_digest(_hash_password(old_password, salt), user["hash"]):
+            return False
+        new_salt = secrets.token_bytes(32)
+        user["hash"] = _hash_password(new_password, new_salt)
+        user["salt"] = new_salt.hex()
+        _save_users(users)
+        return True
+    return False
+
+
+def reset_password(username: str, new_password: str) -> bool:
+    """Admin reset — update password without verifying the old one."""
+    users = _load_users()
+    for user in users:
+        if user.get("username") != username:
+            continue
+        new_salt = secrets.token_bytes(32)
+        user["hash"] = _hash_password(new_password, new_salt)
+        user["salt"] = new_salt.hex()
+        _save_users(users)
+        return True
+    return False

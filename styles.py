@@ -317,6 +317,34 @@ QPushButton#loginSubmitBtn:pressed {
 
 /* ── Main window — Users button ─────────────────────── */
 
+QPushButton#changePwBtn {
+    background-color: rgba(203, 166, 247, 0.12);
+    color: #cba6f7;
+    border: 1px solid rgba(203, 166, 247, 0.25);
+    border-radius: 6px;
+    padding: 4px 14px;
+    font-size: 13px;
+}
+
+QPushButton#changePwBtn:hover {
+    background-color: rgba(203, 166, 247, 0.22);
+    border-color: rgba(203, 166, 247, 0.5);
+}
+
+QPushButton#resetPwdBtn {
+    background-color: transparent;
+    color: #fab387;
+    border: 1px solid rgba(250, 179, 135, 0.3);
+    border-radius: 5px;
+    font-size: 12px;
+    padding: 2px 8px;
+}
+
+QPushButton#resetPwdBtn:hover {
+    background-color: rgba(250, 179, 135, 0.12);
+    border-color: #fab387;
+}
+
 QPushButton#usersBtn {
     background-color: rgba(137, 180, 250, 0.12);
     color: #89b4fa;

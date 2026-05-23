@@ -22,6 +22,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from change_password_dialog import ChangePasswordDialog
 from config_manager import load_config, save_config
 from process_worker import MiddlewareProcess, Status
 from user_manager_dialog import UserManagerDialog
@@ -208,8 +209,16 @@ class MainWindow(QMainWindow):
             )
             layout.addWidget(role_lbl)
 
+            layout.addSpacing(6)
+            chpw_btn = QPushButton("🔑  Change Password")
+            chpw_btn.setObjectName("changePwBtn")
+            chpw_btn.setFixedHeight(34)
+            chpw_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+            chpw_btn.clicked.connect(self._on_change_password)
+            layout.addWidget(chpw_btn)
+
             if self._role == "Admin":
-                layout.addSpacing(8)
+                layout.addSpacing(4)
                 users_btn = QPushButton("👥  Users")
                 users_btn.setObjectName("usersBtn")
                 users_btn.setFixedHeight(34)
@@ -402,6 +411,16 @@ class MainWindow(QMainWindow):
     # ------------------------------------------------------------------ #
     #  UI event handlers
     # ------------------------------------------------------------------ #
+
+    def _on_change_password(self) -> None:
+        dlg = ChangePasswordDialog(
+            username=self._username, require_current=True, parent=self
+        )
+        if dlg.exec() == ChangePasswordDialog.DialogCode.Accepted:
+            from PyQt6.QtWidgets import QMessageBox
+            QMessageBox.information(
+                self, "Password Changed", "Your password has been updated successfully."
+            )
 
     def _on_manage_users(self) -> None:
         dlg = UserManagerDialog(current_username=self._username, parent=self)
