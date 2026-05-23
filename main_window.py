@@ -24,6 +24,7 @@ from PyQt6.QtWidgets import (
 
 from config_manager import load_config, save_config
 from process_worker import MiddlewareProcess, Status
+from user_manager_dialog import UserManagerDialog
 
 
 # ──────────────────────────────────────────────────────────────────────────── #
@@ -180,23 +181,25 @@ class MainWindow(QMainWindow):
         self._stop_all_btn.setFixedHeight(36)
         self._stop_all_btn.clicked.connect(self._on_stop_all)
 
-        layout.addWidget(self._add_btn)
+        if self._role == "Admin":
+            layout.addWidget(self._add_btn)
         layout.addWidget(self._start_all_btn)
         layout.addWidget(self._stop_all_btn)
 
-        # User badge
+        # User badge + manage users (Admin only)
         if self._username:
             layout.addSpacing(8)
             sep = QLabel("|")
             sep.setStyleSheet("color: #5a5a5a; font-size: 18px;")
             layout.addWidget(sep)
-            layout.addSpacing(4)
+            layout.addSpacing(6)
+
+            user_lbl = QLabel(f"👤  {self._username}")
+            user_lbl.setStyleSheet("font-size: 13px; color: #cdd6f4;")
+            layout.addWidget(user_lbl)
+            layout.addSpacing(6)
 
             role_color = "#89b4fa" if self._role == "Admin" else "#a6e3a1"
-            user_lbl = QLabel(f"👤  {self._username}")
-            user_lbl.setStyleSheet(f"font-size: 13px; color: #cdd6f4;")
-            layout.addWidget(user_lbl)
-
             role_lbl = QLabel(self._role)
             role_lbl.setStyleSheet(
                 f"font-size: 11px; font-weight: bold; color: {role_color};"
@@ -204,6 +207,15 @@ class MainWindow(QMainWindow):
                 f"padding: 2px 8px;"
             )
             layout.addWidget(role_lbl)
+
+            if self._role == "Admin":
+                layout.addSpacing(8)
+                users_btn = QPushButton("👥  Users")
+                users_btn.setObjectName("usersBtn")
+                users_btn.setFixedHeight(34)
+                users_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+                users_btn.clicked.connect(self._on_manage_users)
+                layout.addWidget(users_btn)
 
         return bar
 
@@ -259,6 +271,8 @@ class MainWindow(QMainWindow):
         self._clear_btn.setObjectName("clearLogBtn")
         self._clear_btn.setFixedHeight(28)
         self._clear_btn.clicked.connect(self._on_clear_log)
+        if self._role != "Admin":
+            self._clear_btn.hide()
 
         hdr_layout.addWidget(self._log_title)
         hdr_layout.addStretch()
@@ -276,7 +290,12 @@ class MainWindow(QMainWindow):
         layout.addWidget(self._log_view, 1)
 
         # Empty state overlay
-        self._empty_lbl = QLabel("No service selected\n\nClick  + Add JAR  to get started")
+        empty_hint = (
+            "No service selected\n\nClick  + Add JAR  to get started"
+            if self._role == "Admin"
+            else "No service selected"
+        )
+        self._empty_lbl = QLabel(empty_hint)
         self._empty_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._empty_lbl.setStyleSheet(
             "color: #6a6a6a; font-size: 15px; background-color: #3a3a3a;"
@@ -304,6 +323,8 @@ class MainWindow(QMainWindow):
         card.start_btn.clicked.connect(lambda: self._processes[mid].start())
         card.stop_btn.clicked.connect(lambda: self._confirm_stop(mid))
         card.remove_btn.clicked.connect(lambda: self._remove(mid))
+        if self._role != "Admin":
+            card.remove_btn.hide()
         self._cards[mid] = card
 
         item = QListWidgetItem(self._list)
@@ -381,6 +402,10 @@ class MainWindow(QMainWindow):
     # ------------------------------------------------------------------ #
     #  UI event handlers
     # ------------------------------------------------------------------ #
+
+    def _on_manage_users(self) -> None:
+        dlg = UserManagerDialog(current_username=self._username, parent=self)
+        dlg.exec()
 
     def _on_add(self) -> None:
         paths, _ = QFileDialog.getOpenFileNames(

@@ -1,5 +1,5 @@
-from PyQt6.QtCore import QEvent, Qt
-from PyQt6.QtGui import QColor, QPalette
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
     QButtonGroup,
     QDialog,
@@ -7,129 +7,14 @@ from PyQt6.QtWidgets import (
     QGraphicsDropShadowEffect,
     QHBoxLayout,
     QLabel,
-    QLineEdit,
     QPushButton,
     QSizePolicy,
     QVBoxLayout,
 )
 
 import auth_manager
+from field_widgets import PasswordField as _PasswordField, TextField as _TextField
 from icon import create_app_icon
-
-
-_CSS_NORMAL  = "QFrame#fieldBox{background:#16161e;border:1.5px solid #313244;border-radius:8px;}"
-_CSS_FOCUSED = "QFrame#fieldBox{background:#16161e;border:1.5px solid #89b4fa;border-radius:8px;}"
-
-
-def _placeholder(field: QLineEdit) -> None:
-    pal = field.palette()
-    pal.setColor(QPalette.ColorRole.PlaceholderText, QColor("#45475a"))
-    field.setPalette(pal)
-
-
-class _TextField(QFrame):
-    """Text input with a left icon and focus-border highlight."""
-
-    def __init__(self, icon: str, placeholder: str, parent=None):
-        super().__init__(parent)
-        self.setObjectName("fieldBox")
-        self.setFixedHeight(48)
-        self.setStyleSheet(_CSS_NORMAL)
-
-        row = QHBoxLayout(self)
-        row.setContentsMargins(14, 0, 14, 0)
-        row.setSpacing(0)
-
-        lbl = QLabel(icon)
-        lbl.setFixedWidth(22)
-        lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        lbl.setStyleSheet("font-size:15px;color:#585b70;background:transparent;border:none;")
-        row.addWidget(lbl)
-        row.addSpacing(8)
-
-        self.input = QLineEdit()
-        self.input.setPlaceholderText(placeholder)
-        self.input.setObjectName("fieldInput")
-        self.input.setFrame(False)
-        _placeholder(self.input)
-        row.addWidget(self.input, 1)
-
-        self.input.installEventFilter(self)
-
-    def eventFilter(self, obj, event):
-        if obj is self.input:
-            if event.type() == QEvent.Type.FocusIn:
-                self.setStyleSheet(_CSS_FOCUSED)
-            elif event.type() == QEvent.Type.FocusOut:
-                self.setStyleSheet(_CSS_NORMAL)
-        return super().eventFilter(obj, event)
-
-    def text(self) -> str:
-        return self.input.text().strip()
-
-
-class _PasswordField(QFrame):
-    """Password input with show/hide toggle and focus-border highlight."""
-
-    def __init__(self, placeholder: str, parent=None):
-        super().__init__(parent)
-        self.setObjectName("fieldBox")
-        self.setFixedHeight(48)
-        self.setStyleSheet(_CSS_NORMAL)
-
-        row = QHBoxLayout(self)
-        row.setContentsMargins(14, 0, 8, 0)
-        row.setSpacing(0)
-
-        lbl = QLabel("🔒")
-        lbl.setFixedWidth(22)
-        lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        lbl.setStyleSheet("font-size:13px;color:#585b70;background:transparent;border:none;")
-        row.addWidget(lbl)
-        row.addSpacing(8)
-
-        self.input = QLineEdit()
-        self.input.setPlaceholderText(placeholder)
-        self.input.setEchoMode(QLineEdit.EchoMode.Password)
-        self.input.setObjectName("fieldInput")
-        self.input.setFrame(False)
-        _placeholder(self.input)
-        row.addWidget(self.input, 1)
-
-        self._eye = QPushButton("👁")
-        self._eye.setObjectName("eyeBtn")
-        self._eye.setFixedSize(32, 32)
-        self._eye.setCheckable(True)
-        self._eye.setToolTip("Show / hide password")
-        self._eye.setCursor(Qt.CursorShape.PointingHandCursor)
-        self._eye.toggled.connect(self._toggle)
-        row.addWidget(self._eye)
-
-        self.input.installEventFilter(self)
-        self._eye.installEventFilter(self)
-
-    def eventFilter(self, obj, event):
-        if obj in (self.input, self._eye):
-            if event.type() == QEvent.Type.FocusIn:
-                self.setStyleSheet(_CSS_FOCUSED)
-            elif event.type() == QEvent.Type.FocusOut:
-                self.setStyleSheet(_CSS_NORMAL)
-        return super().eventFilter(obj, event)
-
-    def _toggle(self, show: bool) -> None:
-        self.input.setEchoMode(
-            QLineEdit.EchoMode.Normal if show else QLineEdit.EchoMode.Password
-        )
-        self.input.setFocus()
-
-    def text(self) -> str:
-        return self.input.text()
-
-    def clear(self) -> None:
-        self.input.clear()
-
-    def setFocus(self) -> None:
-        self.input.setFocus()
 
 
 class LoginDialog(QDialog):
@@ -218,7 +103,7 @@ class LoginDialog(QDialog):
         self._password = _PasswordField("Enter your password")
         cl.addWidget(self._password)
 
-        # ── Confirm password (setup only) ──
+        # ── Confirm password + account type (setup only) ──
         if self._setup_mode:
             cl.addSpacing(14)
             cl.addWidget(self._cap_label("CONFIRM PASSWORD"))
@@ -227,7 +112,6 @@ class LoginDialog(QDialog):
             cl.addWidget(self._confirm)
             self._confirm.input.returnPressed.connect(self._on_submit)
 
-            # ── Account type (setup only) ──
             cl.addSpacing(16)
             cl.addWidget(self._cap_label("ACCOUNT TYPE"))
             cl.addSpacing(6)
@@ -241,30 +125,26 @@ class LoginDialog(QDialog):
             self._admin_btn.setCheckable(True)
             self._admin_btn.setChecked(True)
             self._admin_btn.setFixedHeight(36)
+            self._admin_btn.setEnabled(False)
 
             self._general_btn = QPushButton("General")
             self._general_btn.setObjectName("typeBtn")
             self._general_btn.setCheckable(True)
             self._general_btn.setFixedHeight(36)
+            self._general_btn.setEnabled(False)
 
-            self._type_group = QButtonGroup(self)
-            self._type_group.setExclusive(True)
-            self._type_group.addButton(self._admin_btn)
-            self._type_group.addButton(self._general_btn)
+            grp = QButtonGroup(self)
+            grp.setExclusive(True)
+            grp.addButton(self._admin_btn)
+            grp.addButton(self._general_btn)
 
             type_row.addWidget(self._admin_btn)
             type_row.addWidget(self._general_btn)
             cl.addLayout(type_row)
-
-            # First account is always Admin
-            self._admin_btn.setEnabled(False)
-            self._general_btn.setEnabled(False)
+            cl.addSpacing(5)
 
             note = QLabel("First account is always Administrator")
-            note.setStyleSheet(
-                "font-size:11px;color:#45475a;background:transparent;"
-            )
-            cl.addSpacing(5)
+            note.setStyleSheet("font-size:11px;color:#45475a;background:transparent;")
             cl.addWidget(note)
 
         # ── Error bar ──
@@ -277,14 +157,10 @@ class LoginDialog(QDialog):
         err_row.setContentsMargins(12, 0, 12, 0)
         err_row.setSpacing(8)
         err_icon = QLabel("⚠")
-        err_icon.setStyleSheet(
-            "font-size:13px;color:#f38ba8;background:transparent;border:none;"
-        )
+        err_icon.setStyleSheet("font-size:13px;color:#f38ba8;background:transparent;border:none;")
         err_row.addWidget(err_icon)
         self._error_text = QLabel()
-        self._error_text.setStyleSheet(
-            "font-size:12px;color:#f38ba8;background:transparent;border:none;"
-        )
+        self._error_text.setStyleSheet("font-size:12px;color:#f38ba8;background:transparent;border:none;")
         err_row.addWidget(self._error_text, 1)
         cl.addWidget(self._error_frame)
 
@@ -299,9 +175,7 @@ class LoginDialog(QDialog):
         cl.addWidget(self._submit_btn)
 
         # Keyboard navigation
-        self._username.input.returnPressed.connect(
-            lambda: self._password.input.setFocus()
-        )
+        self._username.input.returnPressed.connect(lambda: self._password.input.setFocus())
         self._password.input.returnPressed.connect(self._on_submit)
         self._username.input.setFocus()
 
@@ -342,8 +216,7 @@ class LoginDialog(QDialog):
                 self._show_error("Passwords do not match.")
                 return
             self._hide_error()
-            role = "Admin" if self._admin_btn.isChecked() else "General"
-            auth_manager.save_credentials(username, password, role)
+            auth_manager.save_credentials(username, password, "Admin")
             self.accept()
         else:
             if auth_manager.verify_credentials(username, password):

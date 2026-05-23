@@ -315,6 +315,75 @@ QPushButton#loginSubmitBtn:pressed {
     background-color: #6d9de4;
 }
 
+/* ── Main window — Users button ─────────────────────── */
+
+QPushButton#usersBtn {
+    background-color: rgba(137, 180, 250, 0.12);
+    color: #89b4fa;
+    border: 1px solid rgba(137, 180, 250, 0.25);
+    border-radius: 6px;
+    padding: 4px 14px;
+    font-size: 13px;
+}
+
+QPushButton#usersBtn:hover {
+    background-color: rgba(137, 180, 250, 0.22);
+    border-color: rgba(137, 180, 250, 0.5);
+}
+
+/* ── User Manager dialog ────────────────────────────── */
+
+QFrame#umHeader {
+    background-color: #4a4a4a;
+    border-bottom: 1px solid #5a5a5a;
+}
+
+QWidget#umList {
+    background-color: #3a3a3a;
+}
+
+QPushButton#addUserBtn {
+    background-color: #89b4fa;
+    color: #1e1e2e;
+    font-weight: bold;
+    font-size: 12px;
+    border-radius: 6px;
+    border: none;
+    padding: 4px 14px;
+}
+
+QPushButton#addUserBtn:hover {
+    background-color: #b4d0ff;
+}
+
+QPushButton#removeUserBtn {
+    background-color: transparent;
+    color: #f38ba8;
+    border: 1px solid rgba(243, 139, 168, 0.3);
+    border-radius: 5px;
+    font-size: 12px;
+    padding: 2px 8px;
+}
+
+QPushButton#removeUserBtn:hover {
+    background-color: rgba(243, 139, 168, 0.12);
+    border-color: #f38ba8;
+}
+
+QPushButton#removeUserBtn:disabled {
+    color: #45475a;
+    border-color: #313244;
+}
+
+/* ── Add User dialog ────────────────────────────────── */
+
+QPushButton#cancelBtn {
+    background-color: #4a4a4a;
+    color: #9a9a9a;
+    border: 1px solid #5a5a5a;
+    border-radius: 6px;
+}
+
 QInputDialog {
     background-color: #4a4a4a;
 }
