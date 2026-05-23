@@ -1,6 +1,4 @@
-import math
-
-from PyQt6.QtCore import QPointF, Qt
+from PyQt6.QtCore import QRectF, Qt
 from PyQt6.QtGui import QBrush, QColor, QIcon, QPainter, QPainterPath, QPixmap
 
 
@@ -11,60 +9,60 @@ def create_app_icon() -> QIcon:
     return icon
 
 
-def _gear_path(cx: float, cy: float, outer_r: float, inner_r: float, teeth: int) -> QPainterPath:
-    path = QPainterPath()
-    step = 2 * math.pi / teeth
-    half = step * 0.18
-    first = True
-    for i in range(teeth):
-        a = i * step - math.pi / 2
-        for r, da in [
-            (inner_r, -step * 0.38),
-            (outer_r, -half),
-            (outer_r,  half),
-            (inner_r,  step * 0.38),
-        ]:
-            x = cx + r * math.cos(a + da)
-            y = cy + r * math.sin(a + da)
-            if first:
-                path.moveTo(x, y)
-                first = False
-            else:
-                path.lineTo(x, y)
-    path.closeSubpath()
-    return path
-
-
 def _render(size: int) -> QPixmap:
     pix = QPixmap(size, size)
     pix.fill(Qt.GlobalColor.transparent)
     p = QPainter(pix)
     p.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-    cx = cy = size / 2.0
-    pad = max(1.0, size * 0.04)
+    pad  = max(1.0, size * 0.05)
+    inn  = size - 2 * pad          # inner content dimension
 
-    # Rounded-rect background
+    # ── Rounded-rect background ──────────────────────────────────── #
     bg = QPainterPath()
-    radius = size * 0.22
-    bg.addRoundedRect(pad, pad, size - 2 * pad, size - 2 * pad, radius, radius)
+    bg.addRoundedRect(pad, pad, inn, inn, size * 0.22, size * 0.22)
     p.setPen(Qt.PenStyle.NoPen)
     p.setBrush(QBrush(QColor("#1e1e2e")))
     p.drawPath(bg)
 
-    # Gear shape
-    teeth   = 6 if size <= 24 else 8
-    outer_r = size * 0.375
-    inner_r = size * 0.268
-    hole_r  = size * 0.098
+    # ── Helpers ──────────────────────────────────────────────────── #
+    def r(x, y, w, h) -> QRectF:
+        return QRectF(pad + x * inn, pad + y * inn, w * inn, h * inn)
 
-    gear = _gear_path(cx, cy, outer_r, inner_r, teeth)
-    hole = QPainterPath()
-    hole.addEllipse(QPointF(cx, cy), hole_r, hole_r)
-    final_gear = gear.subtracted(hole)
+    cr = max(inn * 0.028, 1.0)      # shared corner radius for all parts
 
     p.setBrush(QBrush(QColor("#89b4fa")))
-    p.drawPath(final_gear)
+    p.setPen(Qt.PenStyle.NoPen)
+
+    # ── Microscope parts (normalised coords 0-1 within inner area) ── #
+
+    # Base — wide rounded bar at the bottom
+    p.drawRoundedRect(r(0.07, 0.86, 0.86, 0.11), cr, cr)
+
+    # Column — vertical body on the right
+    p.drawRoundedRect(r(0.59, 0.22, 0.15, 0.66), cr, cr)
+
+    # Arm — horizontal bridge at the top of the column
+    p.drawRoundedRect(r(0.26, 0.22, 0.48, 0.12), cr, cr)
+
+    # Eyepiece tube — short vertical tube above the arm (right side)
+    p.drawRoundedRect(r(0.61, 0.05, 0.12, 0.19), cr, cr)
+
+    # Eyepiece cap — wider ring at the very top
+    p.drawRoundedRect(r(0.57, 0.04, 0.20, 0.07), cr, cr)
+
+    # Objective tube — long vertical tube hanging from the left of the arm
+    p.drawRoundedRect(r(0.32, 0.34, 0.11, 0.43), cr, cr)
+
+    # Stage — horizontal platform through the objective tube
+    p.drawRoundedRect(r(0.11, 0.49, 0.50, 0.09), cr, cr)
+
+    # Objective lens — wider body at the bottom of the objective tube
+    p.drawRoundedRect(r(0.23, 0.75, 0.29, 0.09), cr, cr)
+
+    # Stage aperture — small dark circle (light hole through the stage)
+    p.setBrush(QBrush(QColor("#1e1e2e")))
+    p.drawEllipse(r(0.33, 0.50, 0.09, 0.07))
 
     p.end()
     return pix

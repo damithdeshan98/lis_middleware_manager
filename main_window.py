@@ -162,7 +162,7 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(20, 0, 20, 0)
         layout.setSpacing(10)
 
-        title = QLabel("⚙  LIS Middleware Manager")
+        title = QLabel("🔬  LIS Middleware Manager")
         title.setStyleSheet("font-size: 18px; font-weight: bold; color: #89b4fa;")
         layout.addWidget(title)
         layout.addStretch()
