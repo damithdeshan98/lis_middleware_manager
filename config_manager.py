@@ -2,6 +2,9 @@ import json
 from pathlib import Path
 
 CONFIG_FILE = Path.home() / ".middleware_manager" / "config.json"
+LOGS_DIR    = Path(__file__).parent / "middlewere_logs"
+
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def load_config() -> list[dict]:
