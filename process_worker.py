@@ -1,4 +1,6 @@
 import re
+import subprocess
+import sys
 import time
 from datetime import datetime
 from enum import Enum
@@ -79,7 +81,15 @@ class MiddlewareProcess(QObject):
     def stop(self) -> None:
         self._user_stopped = True
         if self._process and self._process.state() != QProcess.ProcessState.NotRunning:
-            self._process.kill()
+            if sys.platform == "win32":
+                pid = self._process.processId()
+                if pid:
+                    subprocess.run(
+                        ["taskkill", "/F", "/PID", str(pid), "/T"],
+                        capture_output=True,
+                    )
+            else:
+                self._process.kill()
         else:
             self._set_stopped(0)
 
