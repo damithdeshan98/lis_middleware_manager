@@ -221,6 +221,100 @@ QStatusBar {
     padding: 0 8px;
 }
 
+QDialog {
+    background-color: #1e1e2e;
+}
+
+/* ── Login dialog ───────────────────────────────────── */
+
+QFrame#loginBg {
+    background-color: #1e1e2e;
+}
+
+QFrame#loginCard {
+    background-color: #24273a;
+    border: 1px solid #363a4f;
+    border-radius: 14px;
+}
+
+QLineEdit#fieldInput {
+    background: transparent;
+    border: none;
+    color: #cdd6f4;
+    font-size: 13px;
+    padding: 0;
+    selection-background-color: #45475a;
+}
+
+QPushButton#eyeBtn {
+    background: transparent;
+    border: none;
+    color: #6c7086;
+    font-size: 15px;
+    border-radius: 6px;
+    padding: 0;
+}
+
+QPushButton#eyeBtn:hover {
+    background-color: #313244;
+    color: #cdd6f4;
+}
+
+QPushButton#eyeBtn:checked {
+    color: #89b4fa;
+}
+
+QFrame#errorBox {
+    background-color: rgba(243, 139, 168, 0.10);
+    border: 1px solid rgba(243, 139, 168, 0.28);
+    border-radius: 7px;
+}
+
+QPushButton#typeBtn {
+    background-color: #1e1e2e;
+    color: #6c7086;
+    border: 1.5px solid #313244;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+QPushButton#typeBtn:checked {
+    background-color: #89b4fa;
+    color: #1e1e2e;
+    border-color: #89b4fa;
+}
+
+QPushButton#typeBtn:disabled {
+    background-color: #1e1e2e;
+    color: #45475a;
+    border-color: #2a2a3e;
+}
+
+QPushButton#typeBtn:checked:disabled {
+    background-color: #45475a;
+    color: #cdd6f4;
+    border-color: #45475a;
+}
+
+QPushButton#loginSubmitBtn {
+    background-color: #89b4fa;
+    color: #1e1e2e;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    letter-spacing: 0.3px;
+}
+
+QPushButton#loginSubmitBtn:hover {
+    background-color: #b4d0ff;
+}
+
+QPushButton#loginSubmitBtn:pressed {
+    background-color: #6d9de4;
+}
+
 QInputDialog {
     background-color: #4a4a4a;
 }

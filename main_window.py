@@ -107,9 +107,11 @@ class ServiceCardWidget(QWidget):
 # ──────────────────────────────────────────────────────────────────────────── #
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, username: str = "", role: str = ""):
         super().__init__()
-        self.setWindowTitle("Middleware Manager")
+        self._username = username
+        self._role = role
+        self.setWindowTitle("LIS Middleware Manager")
         self.resize(1200, 720)
         self.setMinimumSize(860, 520)
 
@@ -158,7 +160,7 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(20, 0, 20, 0)
         layout.setSpacing(10)
 
-        title = QLabel("⚙  Middleware Manager")
+        title = QLabel("⚙  LIS Middleware Manager")
         title.setStyleSheet("font-size: 18px; font-weight: bold; color: #89b4fa;")
         layout.addWidget(title)
         layout.addStretch()
@@ -181,6 +183,28 @@ class MainWindow(QMainWindow):
         layout.addWidget(self._add_btn)
         layout.addWidget(self._start_all_btn)
         layout.addWidget(self._stop_all_btn)
+
+        # User badge
+        if self._username:
+            layout.addSpacing(8)
+            sep = QLabel("|")
+            sep.setStyleSheet("color: #5a5a5a; font-size: 18px;")
+            layout.addWidget(sep)
+            layout.addSpacing(4)
+
+            role_color = "#89b4fa" if self._role == "Admin" else "#a6e3a1"
+            user_lbl = QLabel(f"👤  {self._username}")
+            user_lbl.setStyleSheet(f"font-size: 13px; color: #cdd6f4;")
+            layout.addWidget(user_lbl)
+
+            role_lbl = QLabel(self._role)
+            role_lbl.setStyleSheet(
+                f"font-size: 11px; font-weight: bold; color: {role_color};"
+                f"background-color: rgba(255,255,255,0.07); border-radius: 4px;"
+                f"padding: 2px 8px;"
+            )
+            layout.addWidget(role_lbl)
+
         return bar
 
     def _make_sidebar(self) -> QFrame:
@@ -278,7 +302,7 @@ class MainWindow(QMainWindow):
 
         card = ServiceCardWidget(mid, name, jar_path)
         card.start_btn.clicked.connect(lambda: self._processes[mid].start())
-        card.stop_btn.clicked.connect(lambda: self._processes[mid].stop())
+        card.stop_btn.clicked.connect(lambda: self._confirm_stop(mid))
         card.remove_btn.clicked.connect(lambda: self._remove(mid))
         self._cards[mid] = card
 
@@ -294,17 +318,45 @@ class MainWindow(QMainWindow):
 
         self._refresh_statusbar()
 
+    def _confirm_stop(self, mid: str) -> None:
+        proc = self._processes.get(mid)
+        if not proc:
+            return
+        reply = QMessageBox.warning(
+            self,
+            "Stop Service",
+            f"Are you sure you want to stop <b>{proc.name}</b>?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if reply == QMessageBox.StandardButton.Yes:
+            proc.auto_restart = False
+            proc.stop()
+
     def _remove(self, mid: str) -> None:
         proc = self._processes.get(mid)
-        if proc and proc.status == Status.RUNNING:
-            reply = QMessageBox.question(
-                self,
-                "Remove Service",
-                f"<b>{proc.name}</b> is still running.\nStop it and remove?",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+        if not proc:
+            return
+
+        if proc.status == Status.RUNNING:
+            msg = (
+                f"<b>{proc.name}</b> is currently running.<br><br>"
+                "Stop it and remove from the list?"
             )
-            if reply != QMessageBox.StandardButton.Yes:
-                return
+        else:
+            msg = f"Are you sure you want to remove <b>{proc.name}</b>?"
+
+        reply = QMessageBox.warning(
+            self,
+            "Remove Service",
+            msg,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if reply != QMessageBox.StandardButton.Yes:
+            return
+
+        if proc.status == Status.RUNNING:
             proc.auto_restart = False
             proc.stop()
 
@@ -352,10 +404,22 @@ class MainWindow(QMainWindow):
                 proc.start()
 
     def _on_stop_all(self) -> None:
-        for proc in self._processes.values():
-            if proc.status != Status.STOPPED:
-                proc.auto_restart = False
-                proc.stop()
+        active = [p for p in self._processes.values() if p.status != Status.STOPPED]
+        if not active:
+            return
+        count = len(active)
+        reply = QMessageBox.warning(
+            self,
+            "Stop All Services",
+            f"Are you sure you want to stop all <b>{count}</b> running service(s)?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if reply != QMessageBox.StandardButton.Yes:
+            return
+        for proc in active:
+            proc.auto_restart = False
+            proc.stop()
 
     def _on_clear_log(self) -> None:
         if self._selected_id:
