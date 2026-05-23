@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚙ LIS Middleware Manager
+# 🔬 LIS Middleware Manager
 
 **A modern desktop application for managing Laboratory Information System middleware services**
 
@@ -49,11 +49,14 @@ LIS Middleware Manager is a PyQt6 desktop application that lets you run, monitor
 | Add JAR service | ✅ | ❌ |
 | Remove service | ✅ | ❌ |
 | Clear logs | ✅ | ❌ |
+| Change password | ✅ | ❌ |
 | Manage users | ✅ | ❌ |
+| Reset other users' passwords | ✅ | ❌ |
 
 ### User Management *(Admin only)*
 - **Add users** — create new Admin or General accounts
 - **Remove users** — delete any account except your own
+- **Reset passwords** — reset any user's password without knowing the old one
 - **User list** — view all registered users with their roles
 - **Multi-user support** — unlimited users stored in a single JSON file
 
@@ -132,19 +135,20 @@ After setup, the login screen appears on every subsequent launch.
 ```
 lis_middleware_manager/
 │
-├── main.py                  # Entry point — launches login then main window
-├── main_window.py           # Main application window and service list
-├── process_worker.py        # MiddlewareProcess — wraps QProcess for each JAR
-├── config_manager.py        # Load/save service configuration
+├── main.py                      # Entry point — launches login then main window
+├── main_window.py               # Main application window and service list
+├── process_worker.py            # MiddlewareProcess — wraps QProcess for each JAR
+├── config_manager.py            # Load/save service configuration
 │
-├── auth_manager.py          # User credential storage and verification
-├── login_dialog.py          # Login / first-time setup dialog
-├── add_user_dialog.py       # Add new user form (Admin only)
-├── user_manager_dialog.py   # User management list dialog (Admin only)
-├── field_widgets.py         # Shared styled input field widgets
+├── auth_manager.py              # User credential storage and verification
+├── login_dialog.py              # Login / first-time setup dialog
+├── add_user_dialog.py           # Add new user form (Admin only)
+├── user_manager_dialog.py       # User management list dialog (Admin only)
+├── change_password_dialog.py    # Change / reset password dialog (Admin only)
+├── field_widgets.py             # Shared styled input field widgets
 │
-├── styles.py                # Global Qt stylesheet (dark theme)
-├── icon.py                  # Programmatically rendered gear icon
+├── styles.py                    # Global Qt stylesheet (dark theme)
+├── icon.py                      # Programmatically rendered microscope icon
 │
 ├── requirements.txt
 └── README.md

@@ -209,13 +209,14 @@ class MainWindow(QMainWindow):
             )
             layout.addWidget(role_lbl)
 
-            layout.addSpacing(6)
-            chpw_btn = QPushButton("🔑  Change Password")
-            chpw_btn.setObjectName("changePwBtn")
-            chpw_btn.setFixedHeight(34)
-            chpw_btn.setCursor(Qt.CursorShape.PointingHandCursor)
-            chpw_btn.clicked.connect(self._on_change_password)
-            layout.addWidget(chpw_btn)
+            if self._role == "Admin":
+                layout.addSpacing(6)
+                chpw_btn = QPushButton("🔑  Change Password")
+                chpw_btn.setObjectName("changePwBtn")
+                chpw_btn.setFixedHeight(34)
+                chpw_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+                chpw_btn.clicked.connect(self._on_change_password)
+                layout.addWidget(chpw_btn)
 
             if self._role == "Admin":
                 layout.addSpacing(4)
