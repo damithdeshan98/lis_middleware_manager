@@ -1,1 +1,3 @@
 middlewere_logs/
+__pycache__/
+*.pyc
