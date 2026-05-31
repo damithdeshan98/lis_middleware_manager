@@ -19,6 +19,15 @@ LIS Middleware Manager is a PyQt6 desktop application that lets you run, monitor
 
 ---
 
+## Documentation
+
+| Manual | For | Contents |
+|---|---|---|
+| 📘 [User Manual](manuals/USER_MANUAL.md) | Operators & lab staff | Install, login, managing services, logs, auto-restart, user management, troubleshooting |
+| 📗 [Developer Manual](manuals/DEVELOPER_MANUAL.md) | Maintainers | Architecture, module reference, process lifecycle, authentication, RBAC, build & distribution |
+
+---
+
 ## Features
 
 ### Process Management
@@ -149,6 +158,10 @@ lis_middleware_manager/
 │
 ├── styles.py                    # Global Qt stylesheet (dark theme)
 ├── icon.py                      # Programmatically rendered microscope icon
+│
+├── manuals/                     # User & developer documentation
+│   ├── USER_MANUAL.md
+│   └── DEVELOPER_MANUAL.md
 │
 ├── requirements.txt
 └── README.md
